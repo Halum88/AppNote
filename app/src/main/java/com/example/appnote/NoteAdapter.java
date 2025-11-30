@@ -1,4 +1,3 @@
-// NoteAdapter.java
 package com.example.appnote;
 
 import android.view.LayoutInflater;

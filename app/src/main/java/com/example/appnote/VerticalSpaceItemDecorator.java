@@ -1,4 +1,3 @@
-// VerticalSpaceItemDecorator.java
 package com.example.appnote;
 
 import android.graphics.Rect;

@@ -1,4 +1,3 @@
-// Note.java
 package com.example.appnote;
 
 public class Note {
