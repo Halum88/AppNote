@@ -1,31 +1,38 @@
 package com.example.appnote;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.appnote.databinding.ActivityMainBinding;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
+    private RecyclerView recyclerView;
+    private NoteAdapter adapter;
+    private List<Note> noteList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        recyclerView = findViewById(R.id.recyclerViewNotes);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        binding.btnGo.setOnClickListener(view -> {
-            String name = binding.editName.getText().toString();
-            String age = binding.editAge.getText().toString();
 
-            Intent intent = new Intent(MainActivity.this, GreetingActivity.class);
-            intent.putExtra("name", name);
-            intent.putExtra("age", age);
-            startActivity(intent);
-        });
+        noteList = new ArrayList<>();
+        noteList.add(new Note("One List", "One"));
+        noteList.add(new Note("Two List", "Two"));
+        noteList.add(new Note("Three List", "Three"));
+
+        adapter = new NoteAdapter(noteList);
+        recyclerView.setAdapter(adapter);
+
+
+        recyclerView.addItemDecoration(new VerticalSpaceItemDecorator(16));
     }
 }
