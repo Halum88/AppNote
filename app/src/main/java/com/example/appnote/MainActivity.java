@@ -2,33 +2,25 @@ package com.example.appnote;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.example.appnote.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText editName;
-    private EditText editAge;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        editName = findViewById(R.id.editName);
-        editAge = findViewById(R.id.editAge);
-        Button btnGo = findViewById(R.id.btnGo);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        btnGo.setOnClickListener(view -> {
-            String name = editName.getText().toString();
-            String age = editAge.getText().toString();
+        binding.btnGo.setOnClickListener(view -> {
+            String name = binding.editName.getText().toString();
+            String age = binding.editAge.getText().toString();
 
             Intent intent = new Intent(MainActivity.this, GreetingActivity.class);
             intent.putExtra("name", name);
