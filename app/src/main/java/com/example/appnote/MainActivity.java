@@ -1,5 +1,6 @@
 package com.example.appnote;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private NoteAdapter adapter;
     private List<Note> noteList;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +31,12 @@ public class MainActivity extends AppCompatActivity {
         noteList.add(new Note("Two List", "Two"));
         noteList.add(new Note("Three List", "Three"));
 
-        adapter = new NoteAdapter(noteList);
+        adapter = new NoteAdapter(noteList, note -> {
+            Intent intent = new Intent(MainActivity.this, AddEditNoteActivity.class);
+            intent.putExtra(AddEditNoteActivity.EXTRA_NOTE, note);
+            startActivity(intent);
+        });
+
         recyclerView.setAdapter(adapter);
 
 
