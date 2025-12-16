@@ -16,15 +16,43 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.SharedPreferences;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private NoteAdapter adapter;
     private List<Note> noteList;
-
-
+    private static final String PREFS_NAME = "app_note_prefs";
+    private static final String NOTES_KEY = "notes";
     private ActivityResultLauncher<Intent> addEditNoteLauncher;
+
+
+    private void saveNotes() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(noteList);
+        editor.putString(NOTES_KEY, json);
+        editor.apply();
+    }
+
+    private void loadNotes() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String json = prefs.getString(NOTES_KEY, null);
+        if (json != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<Note>>() {}.getType();
+            noteList = gson.fromJson(json, type);
+        } else {
+            noteList = new ArrayList<>();
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,26 +67,8 @@ public class MainActivity extends AppCompatActivity {
         noteList.add(new Note("Two List", "Two"));
         noteList.add(new Note("Three List", "Three"));
 
-        addEditNoteLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Intent data = result.getData();
-                        Note note = (Note) data.getSerializableExtra(AddEditNoteActivity.EXTRA_NOTE);
-                        int position = data.getIntExtra(AddEditNoteActivity.EXTRA_POSITION, -1);
 
-                        if (position == -1) {
-                            noteList.add(note);
-                            adapter.notifyItemInserted(noteList.size() - 1);
-                        } else {
-                            noteList.set(position, note);
-                            adapter.notifyItemChanged(position);
-                        }
-                    }
-                }
-        );
-
-
+        loadNotes();
         adapter = new NoteAdapter(noteList, new NoteAdapter.NoteClickListener() {
             @Override
             public void onNoteClick(Note note, int position) {
@@ -82,6 +92,28 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, AddEditNoteActivity.class);
             addEditNoteLauncher.launch(intent);
         });
+
+
+        addEditNoteLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Intent data = result.getData();
+                        Note note = (Note) data.getSerializableExtra(AddEditNoteActivity.EXTRA_NOTE);
+                        int position = data.getIntExtra(AddEditNoteActivity.EXTRA_POSITION, -1);
+
+                        if (position == -1) {
+                            noteList.add(note);
+                            adapter.notifyItemInserted(noteList.size() - 1);
+                            saveNotes();
+                        } else {
+                            noteList.set(position, note);
+                            adapter.notifyItemChanged(position);
+                            saveNotes();
+                        }
+                    }
+                }
+        );
     }
 
     private void showNoteContextMenu(View view, Note note, int position) {
@@ -101,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.action_delete) {
                 noteList.remove(position);
                 adapter.notifyItemRemoved(position);
+                saveNotes();
                 return true;
 
             } else {
