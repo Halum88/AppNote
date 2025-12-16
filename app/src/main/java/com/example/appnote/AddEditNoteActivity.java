@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 public class AddEditNoteActivity extends AppCompatActivity {
 
     public static final String EXTRA_NOTE = "extra_note";
+    public static final String EXTRA_POSITION = "extra_position";
+
+    private int notePosition = -1;
 
     private EditText etTitle;
     private EditText etContent;
@@ -28,6 +31,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra(EXTRA_NOTE)) {
             Note note = (Note) getIntent().getSerializableExtra(EXTRA_NOTE);
+            notePosition = getIntent().getIntExtra(EXTRA_POSITION, -1);
             if (note != null) {
                 etTitle.setText(note.getTitle());
                 etContent.setText(note.getContent());
@@ -42,6 +46,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
                 Note note = new Note(title, content);
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(EXTRA_NOTE, note);
+                resultIntent.putExtra(EXTRA_POSITION, notePosition);
                 setResult(Activity.RESULT_OK, resultIntent);
                 finish();
             }

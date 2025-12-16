@@ -12,25 +12,23 @@ import java.util.List;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
+    public interface NoteClickListener {
+        void onNoteClick(Note note, int position);
+        void onNoteLongClick(View view, Note note, int position);
+    }
+
     private List<Note> notes;
-    private OnNoteClickListener listener;
-    public NoteAdapter(List<Note> notes) {
-        this.notes = notes;
-    }
-    public interface OnNoteClickListener {
-        void onNoteClick(Note note);
-    }
-    public NoteAdapter(List<Note> notes, OnNoteClickListener listener) {
+    private NoteClickListener listener;
+
+    public NoteAdapter(List<Note> notes, NoteClickListener listener) {
         this.notes = notes;
         this.listener = listener;
     }
 
-
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_note, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false);
         return new NoteViewHolder(view);
     }
 
@@ -41,12 +39,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         holder.tvContent.setText(note.getContent());
 
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onNoteClick(note);
-            }
+            if (listener != null) listener.onNoteClick(note, holder.getAdapterPosition());
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null) listener.onNoteLongClick(v, note, holder.getAdapterPosition());
+            return true;
         });
     }
-
 
     @Override
     public int getItemCount() {
