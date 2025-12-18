@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -66,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
         noteList.add(new Note("One List", "One"));
         noteList.add(new Note("Two List", "Two"));
         noteList.add(new Note("Three List", "Three"));
+
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setLogo(R.mipmap.ic_launcher);
 
 
         loadNotes();
