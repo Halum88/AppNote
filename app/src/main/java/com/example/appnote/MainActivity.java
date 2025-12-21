@@ -1,10 +1,13 @@
 package com.example.appnote;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -53,6 +56,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         recyclerView = findViewById(R.id.recyclerViewNotes);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        Context context = recyclerView.getContext();
+        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_slide);
+        recyclerView.setLayoutAnimation(controller);
+
         adapter = new NoteAdapter(null, new NoteAdapter.NoteClickListener() {
             @Override
             public void onNoteClick(Note note, int position) {
@@ -97,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void showNotes(List<Note> notes) {
         adapter.setNotes(notes);
+        recyclerView.scheduleLayoutAnimation();
     }
 
     @Override
