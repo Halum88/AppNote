@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
@@ -24,6 +25,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         this.notes = notes;
         this.listener = listener;
     }
+
+    public void setNotes(List<Note> newNotes) {
+        this.notes = newNotes != null ? newNotes : new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
 
     @NonNull
     @Override
